@@ -40,6 +40,9 @@ class Rectangle:
         self.min_x = 0
         self.min_y = 0
 
+    def __str__(self):
+        return str(self.a)+str(self.b)+str(self.c)+str(self.d)
+
     # всего возможны 8 комбинаций расположения прямоугольника
     # вокруг точки p
     def set_rect(self, p, swipe, up, right):
@@ -126,6 +129,23 @@ class Rectangle:
         else:
             return False
 
+    @staticmethod
+    def create_rectangles_from_point(p, width, height):
+        ret = []
+        for i in range(8):
+            args = [True if digit == '1' else False for digit in bin(i)[2:]]
+            args = [False] * (3 - len(args)) + args
+            r = Rectangle(width,height)
+            r.set_rect(p,args[0],args[1],args[2])
+            ret.append(r)
+        return ret
+
+    @staticmethod
+    def bool_args_from_int(d):
+        # d =  d << d.bit_length()
+        ret = [True if digit == '1' else False for digit in bin(d)[2:]]
+        ret = [False]*(3-len(ret)) + ret
+        print(ret)
 
 r1 = Rectangle(3, 4)
 r1.set_rect(Point(0, 0), False, True, True)
@@ -144,5 +164,9 @@ for p in r3.points():
 print()
 r4 = Rectangle(3, 2)
 r4.set_rect(Point(4, 5), False, True, True)
-print(Rectangle.check_cross(r1, r3))
+# print(Rectangle.check_cross(r1, r3))
 # print(Rectangle.check_edge_in_rect(r3, (Point(0,0),Point(3,0))))
+
+for r in Rectangle.create_rectangles_from_point(Point(0,0),3,2):
+    print(r)
+# print(Rectangle.bool_args_from_int(8))
