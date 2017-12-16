@@ -10,6 +10,9 @@ class Point:
     def __str__(self):
         return str((self.x, self.y))
 
+    def tuple(self):
+        return (self.x, self.y)
+
     # @staticmethod
     # def check_segment_cross_segment(a,b,x,y):
     # проверяем, лежит ли точка p на отрезке ab (который может быть либо горизонтальный, либо вертикальный)
@@ -21,7 +24,11 @@ class Point:
         else:
             return False
 
-
+# прямоугольник abcd будем считать фигуру в определенной последовательности:
+# a -------- b
+#  |        |
+#  |        |
+# c -------- d
 class Rectangle:
     a = Point(0, 0)
     b = Point(0, 0)
@@ -90,6 +97,9 @@ class Rectangle:
     def edges(self):
         return [(self.a, self.b), (self.b, self.c), (self.c, self.d), (self.d, self.a)]
 
+    def center(self):
+        return ((self.max_x - self.min_x) / 2, (self.max_y - self.min_y) / 2)
+
     # один прямоугольник будет пересекать другой когда:
     # - хотя бы одна точка лежит внутри него
     # - если все точки лежат на гранях прямоугольника
@@ -147,26 +157,26 @@ class Rectangle:
         ret = [False]*(3-len(ret)) + ret
         print(ret)
 
-r1 = Rectangle(3, 4)
-r1.set_rect(Point(0, 0), False, True, True)
-for p in r1.points():
-    print(p)
-print()
-r2 = Rectangle(3, 2)
-r2.set_rect(Point(1, 1), False, True, True)
-for p in r2.points():
-    print(p)
-print()
-r3 = Rectangle(3, 2)
-r3.set_rect(Point(3, 1), False, True, True)
-for p in r3.points():
-    print(p)
-print()
-r4 = Rectangle(3, 2)
-r4.set_rect(Point(4, 5), False, True, True)
+# r1 = Rectangle(3, 4)
+# r1.set_rect(Point(0, 0), False, True, True)
+# for p in r1.points():
+#     print(p)
+# print()
+# r2 = Rectangle(3, 2)
+# r2.set_rect(Point(1, 1), False, True, True)
+# for p in r2.points():
+#     print(p)
+# print()
+# r3 = Rectangle(3, 2)
+# r3.set_rect(Point(3, 1), False, True, True)
+# for p in r3.points():
+#     print(p)
+# print()
+# r4 = Rectangle(3, 2)
+# r4.set_rect(Point(4, 5), False, True, True)
 # print(Rectangle.check_cross(r1, r3))
 # print(Rectangle.check_edge_in_rect(r3, (Point(0,0),Point(3,0))))
 
-for r in Rectangle.create_rectangles_from_point(Point(0,0),3,2):
-    print(r)
+# for r in Rectangle.create_rectangles_from_point(Point(0,0),3,2):
+#     print(r)
 # print(Rectangle.bool_args_from_int(8))
