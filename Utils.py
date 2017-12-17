@@ -18,9 +18,10 @@ class Utils:
                     if not sets[i].isdisjoint(sets[j]):
                         sets[i] = sets[i].union(sets[j])
                         # sets.remove(sets[j])
-        print(sets)
+        # print(sets)
         ret = []
         for s in sets:
             if not list(s) in ret:
                 ret.append(list(s))
-        print(ret)
+        return ret
+        # print(ret)

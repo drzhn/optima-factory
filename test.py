@@ -27,5 +27,7 @@
 # print(s)
 
 from Settings import get_test_settings
-
+import json
 traffic = get_test_settings()["traffic"]
+f = open("settings.txt",'w')
+json.dump(get_test_settings(),f)
