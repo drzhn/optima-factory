@@ -8,16 +8,16 @@ class Point:
         self.y = y
 
     def __str__(self):
-        return str((self.x, self.y))
+        return "({:.4f}".format(self.x*1000) + ", {:.4f})".format(self.y*1000) #str((self.x, self.y))
 
     def tuple(self):
-        return (self.x, self.y)
+        return self.x, self.y
 
-    # @staticmethod
-    # def distance(p1,p2):
+    # манхэттенское расстояние
+    @staticmethod
+    def distance(p1, p2):
+        return abs(p1.x - p2.x) + abs(p1.y - p2.y)
 
-    # @staticmethod
-    # def check_segment_cross_segment(a,b,x,y):
     # проверяем, лежит ли точка p на отрезке ab (который может быть либо горизонтальный, либо вертикальный)
     @staticmethod
     def check_point_on_segment(a, b, p):
@@ -53,7 +53,12 @@ class Rectangle:
         self.min_y = 0
 
     def __str__(self):
-        return str(self.a) + str(self.b) + str(self.c) + str(self.d)
+        ret = "Square #" + str(self.index + 1) + ": \n"
+        ret += "   A: " + str(self.a) + " B: " + str(self.b) + " C: " + str(self.c) + " D: " + str(self.d) + "\n"
+        ret += "   Width: " + "{:.4f}".format(self.width*1000) + ", Height: " + "{:.4f}".format(self.height*1000) + "\n"
+        ret += "   Area: " + "{:.4f}".format(self.width * self.height) + "\n"
+        ret += "   Center" + str(self.center()) + "\n"
+        return ret
 
     # всего возможны 8 комбинаций расположения прямоугольника
     # вокруг точки p
@@ -103,7 +108,7 @@ class Rectangle:
         return [(self.a, self.b), (self.b, self.c), (self.c, self.d), (self.d, self.a)]
 
     def center(self):
-        return Point((self.max_x - self.min_x) / 2, (self.max_y - self.min_y) / 2)
+        return Point((self.max_x + self.min_x) / 2, (self.max_y + self.min_y) / 2)
 
     # один прямоугольник будет пересекать другой когда:
     # - хотя бы одна точка лежит внутри него
@@ -191,7 +196,7 @@ class Rectangle:
                     nearest_point = res[1]
                     found = True
                     index = rect.index
-        # в конце вернем является ли луч вертикальным или горизонтальным
+        # в конце вернем является ли луч  горизонтальным или вертикальным
         return found, nearest_point, min_distance, edge[0].y == edge[1].y, index
 
     # проверяем, пересекает ли луч пущенный из одного отрезка в разные стороны другой отрезок
@@ -207,32 +212,32 @@ class Rectangle:
             return True, Point(seg[0].x, edge[0].y), min(abs(edge[0].y - seg[0].y), abs(edge[0].y - seg[1].y))
         return False, Point(0, 0), 0
 
-    # r1 = Rectangle(3, 4)
-    # r1.set_rect(Point(0, 0), False, True, True)
-    # for p in r1.points():
-    #     print(p)
-    # print()
-    # r2 = Rectangle(3, 2)
-    # r2.set_rect(Point(1, 1), False, True, True)
-    # for p in r2.points():
-    #     print(p)
-    # print()
-    # r3 = Rectangle(3, 2)
-    # r3.set_rect(Point(3, 1), False, True, True)
-    # for p in r3.points():
-    #     print(p)
-    # print()
-    # r4 = Rectangle(3, 2)
-    # r4.set_rect(Point(4, 5), False, True, True)
-    # print(Rectangle.check_cross(r1, r3))
-    # print(Rectangle.check_edge_in_rect(r3, (Point(0,0),Point(3,0))))
+        # r1 = Rectangle(3, 4)
+        # r1.set_rect(Point(0, 0), False, True, True)
+        # for p in r1.points():
+        #     print(p)
+        # print()
+        # r2 = Rectangle(3, 2)
+        # r2.set_rect(Point(1, 1), False, True, True)
+        # for p in r2.points():
+        #     print(p)
+        # print()
+        # r3 = Rectangle(3, 2)
+        # r3.set_rect(Point(3, 1), False, True, True)
+        # for p in r3.points():
+        #     print(p)
+        # print()
+        # r4 = Rectangle(3, 2)
+        # r4.set_rect(Point(4, 5), False, True, True)
+        # print(Rectangle.check_cross(r1, r3))
+        # print(Rectangle.check_edge_in_rect(r3, (Point(0,0),Point(3,0))))
 
-    # for r in Rectangle.create_rectangles_from_point(Point(0,0),3,2):
-    #     print(r)
-    # print(Rectangle.bool_args_from_int(8))
+        # for r in Rectangle.create_rectangles_from_point(Point(0,0),3,2):
+        #     print(r)
+        # print(Rectangle.bool_args_from_int(8))
 
-    # for edge in r1.edges():
-    # print(Point(3, 5), Point(3, 7))
-    # print(r1.edges()[0][0], r1.edges()[0][1])
-    # print(Rectangle.check_ray_cross_edge((Point(3, 3), Point(5, 3)), edge)[1])
-    # print(Rectangle.check_ray_cross_edge((Point(3, 3), Point(5, 3)), edge)[2])
+        # for edge in r1.edges():
+        # print(Point(3, 5), Point(3, 7))
+        # print(r1.edges()[0][0], r1.edges()[0][1])
+        # print(Rectangle.check_ray_cross_edge((Point(3, 3), Point(5, 3)), edge)[1])
+        # print(Rectangle.check_ray_cross_edge((Point(3, 3), Point(5, 3)), edge)[2])
