@@ -10,6 +10,8 @@ from Settings import get_test_settings
 
 class Factory:
     rectangles = []
+    optima_d = 0
+    common_weight = 0
 
     def add_rectangle(self, index):
         ratio = self.settings["ratios"][index]
@@ -39,8 +41,8 @@ class Factory:
                 index_rect = rect.index
                 # print(index_rect)
                 D += self.settings["coefficients"][self.settings["location"][index][index_rect]] + \
-                     Point.distance(r.center(), rect.center()) * self.settings["traffic"][index][index_rect]
-                # D += Point.distance(r.center(), rect.center())
+                     Point.distance(r.center(), rect.center()) * \
+                     max(self.settings["traffic"][index][index_rect], self.settings["traffic"][index_rect][index])
             if (D < min_d):
                 min_d = D
                 optima = r
@@ -81,7 +83,7 @@ class Factory:
         fig1 = plt.figure()
         ax1 = fig1.add_subplot(111, aspect='equal')
         ax1.grid(True, which='both')
-
+        ax1.axis([-200, 200, -200, 200])
         for rect in self.rectangles:
             # print(rect.center())
             ax1.add_patch(
@@ -92,7 +94,18 @@ class Factory:
                     color=(random.random(), random.random(), random.random())
                 )
             )
+            ax1.text(rect.center().x, rect.center().y, str(rect.index + 1))
         plt.show()
+
+    def calculate_common_weight(self):
+        self.common_weight = 0
+        rectangles = {}
+        for r in self.rectangles:
+            rectangles[r.index] = r
+        for i in range(len(self.settings["areas"])):
+            for j in range(len(self.settings["areas"])):
+                self.common_weight += Point.distance(rectangles[i].center(), rectangles[j].center()) * \
+                                      (self.settings["traffic"][j][i] + self.settings["traffic"][i][j])
 
     def load_settings(self):
         self.settings = get_test_settings()
@@ -100,10 +113,9 @@ class Factory:
             for j in range(len(self.settings["areas"])):
                 if j > i:
                     self.settings["location"][j][i] = self.settings["location"][i][j]
-                if self.settings["traffic"][j][i] > 0:
-                    self.settings["traffic"][i][j] = self.settings["traffic"][j][i]
-                if self.settings["traffic"][i][j] > 0:
-                    self.settings["traffic"][j][i] = self.settings["traffic"][i][j]
+                    # max_traffic = max(self.settings["traffic"][j][i],self.settings["traffic"][i][j])
+                    # self.settings["traffic"][j][i] = max_traffic
+                    # self.settings["traffic"][i][j] = max_traffic
 
     def print_result(self):
         length = len(self.rectangles)
@@ -111,14 +123,16 @@ class Factory:
             for r in self.rectangles:
                 if r.index == i:
                     print(r)
+        print(str(self.common_weight))
 
     def save_result(self):
-        f = open("result.txt","w")
+        f = open("result.txt", "w")
         length = len(self.rectangles)
         for i in range(length):
             for r in self.rectangles:
                 if r.index == i:
-                    f.write(str(r)+'\n')
+                    f.write(str(r) + '\n')
+        f.write(str(self.common_weight) + '\n')
 
 
 f = Factory()
@@ -126,12 +140,13 @@ f.load_settings()
 
 concomponent = Utils.connection_components(f.settings["traffic"])
 for component in concomponent:
-    for i in range(len(component)-1):
-        for j in range(i+1,len(component)):
+    for i in range(len(component) - 1):
+        for j in range(i + 1, len(component)):
             if f.settings["areas"][component[j]] > f.settings["areas"][component[i]]:
                 component[i], component[j] = component[j], component[i]
     for i in range(len(component)):
         f.add_rectangle(component[i])
+f.calculate_common_weight()
 f.print_result()
 f.show_rectangles()
 f.save_result()
